@@ -2,61 +2,30 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const getTask = /* GraphQL */ `
-  query GetTask($id: ID!) {
-    getTask(id: $id) {
+export const getTodo = /* GraphQL */ `
+  query GetTodo($id: ID!) {
+    getTodo(id: $id) {
       id
-      title
+      name
       description
-      status
       createdAt
       updatedAt
     }
   }
 `;
-export const listTasks = /* GraphQL */ `
-  query ListTasks(
-    $filter: ModelTaskFilterInput
+export const listTodos = /* GraphQL */ `
+  query ListTodos(
+    $filter: ModelTodoFilterInput
     $limit: Int
     $nextToken: String
   ) {
-    listTasks(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listTodos(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        title
+        name
         description
-        status
         createdAt
         updatedAt
-      }
-      nextToken
-    }
-  }
-`;
-export const getPrivateNote = /* GraphQL */ `
-  query GetPrivateNote($id: ID!) {
-    getPrivateNote(id: $id) {
-      id
-      content
-      createdAt
-      updatedAt
-      owner
-    }
-  }
-`;
-export const listPrivateNotes = /* GraphQL */ `
-  query ListPrivateNotes(
-    $filter: ModelPrivateNoteFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    listPrivateNotes(filter: $filter, limit: $limit, nextToken: $nextToken) {
-      items {
-        id
-        content
-        createdAt
-        updatedAt
-        owner
       }
       nextToken
     }

@@ -1,5 +1,5 @@
 {
-  "AppSyncApiName": "trackingapi",
+  "AppSyncApiName": "crowtrackapi",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
   "AuthCognitoUserPoolId": {

@@ -8,7 +8,7 @@
     }
   },
   "api": {
-    "trackingapi": {
+    "crowtrackapi": {
       "service": "AppSync",
       "providerPlugin": "awscloudformation",
       "output": {

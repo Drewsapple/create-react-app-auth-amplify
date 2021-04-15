@@ -1,77 +1,95 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
-import { withAuthenticator } from 'aws-amplify-react'
-import Amplify, { Auth } from 'aws-amplify';
+import logo from './logo.svg';
+
+import { uuid } from 'uuidv4';
+
+import Amplify, { API, graphqlOperation } from 'aws-amplify';
+import { AmplifyAuthenticator, AmplifySignUp, AmplifySignOut } from '@aws-amplify/ui-react'
+import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components'
+
+import { listTodos } from './graphql/queries';
+import { createTodo, updateTodo, deleteTodo } from './graphql/mutations';
+import { onCreateTodo } from './graphql/subscriptions';
+
+
 import aws_exports from './aws-exports';
+import { ListTodosQuery } from './API';
+import CurrentVisitor from './CurrentVisitor';
+import VisitorList from './VisitorList';
+
 Amplify.configure(aws_exports);
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+interface CognitoUser {
+  username: string
 }
 
-export default withAuthenticator(App, true, [], null, null, {
-  defaultCountryCode: 1,
-  hideAllDefaults: true,
-  signUpFields: [
-    {
-      label: "Full Name",
-      key: "name",
-      required: true,
-      placeholder: "Carl Ziegler",
-      type: "name",
-      displayOrder: 1,
-    },
-    {
-      label: 'Username',
-      key: 'preferred_username',
-      required: true,
-      placeholder: 'Use your scroll if you can',
-      displayOrder: 2,
-    },
-    {
-      label: 'Phone Number',
-      key: 'phone_number',
-      placeholder: 'Phone Number',
-      required: true,
-      displayOrder: 3,
-    },
-    {
-      label: 'Email',
-      key: 'email',
-      required: true,
-      placeholder: 'Non-WPI Email',
-      type: 'email',
-      displayOrder: 4,
-    },
-    {
-      label: 'Password',
-      key: 'password',
-      required: true,
-      placeholder: 'Password',
-      type: 'password',
-      displayOrder: 5,
-    },
-  ],
-});
+const todo = { name: "My first todo", description: "Hello world!" };
 
-// export default withAuthenticator(App, false);
+
+const AuthStateApp: React.FunctionComponent = () => {
+  const [authState, setAuthState] = React.useState<AuthState>();
+  const [user, setUser] = React.useState<CognitoUser>();
+
+  React.useEffect(() => {
+    return onAuthUIStateChange((nextAuthState, authData) => {
+      setAuthState(nextAuthState);
+      setUser(authData as CognitoUser);
+    });
+  }, []);
+
+  // Subscribe to creation of Todo
+  const todos = (API.graphql({ query: listTodos }) as Promise<ListTodosQuery[]>);
+  const tasklist = todos.then((list) => list)
+  console.log(tasklist)
+
+  return authState === AuthState.SignedIn && user ? (
+    <div className="App">
+      <div>Hello, {user.username}</div>
+      <VisitorList visitors={tasklist}/>
+      <AmplifySignOut />
+    </div>
+  ) : (
+      <AmplifyAuthenticator>
+        <AmplifySignUp
+          headerText="Signup for CrowTrack Here"
+          slot="sign-up"
+          usernameAlias="username"
+          formFields={[
+            {
+              label: "Full Name",
+              required: true,
+              placeholder: "Carl Ziegler",
+              type: "name"
+            },
+            {
+              label: 'Username',
+              type: 'preferred_username',
+              required: true,
+              placeholder: 'Use your scroll if you can'
+            },
+            {
+              label: 'Phone Number',
+              type: 'phone_number',
+              placeholder: 'Phone Number',
+              required: true,
+            },
+            {
+              label: 'Email',
+              type: 'email',
+              required: true,
+              placeholder: 'Non-WPI Email',
+            },
+            {
+              label: 'Password',
+              type: 'password',
+              required: true,
+              placeholder: 'Password',
+            }
+          ]}
+        ></AmplifySignUp>
+      </AmplifyAuthenticator >
+    );
+}
+
+export default AuthStateApp;
