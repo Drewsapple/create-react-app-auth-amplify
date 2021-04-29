@@ -19,7 +19,11 @@
               "userPoolId": "authcreatereactappauthamplify"
             }
           },
-          "additionalAuthenticationProviders": []
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "AWS_IAM"
+            }
+          ]
         }
       }
     }

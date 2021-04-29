@@ -9,7 +9,7 @@ interface CurrentVisitor {
 export default function CurrentVisitor({visitor}) {
     return (
         <div>
-            {visitor.name} {visitor.timeIn}
+            {visitor.name} {visitor.signin}
         </div>
     )
 }

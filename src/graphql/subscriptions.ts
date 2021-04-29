@@ -2,34 +2,79 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const onCreateTodo = /* GraphQL */ `
-  subscription OnCreateTodo {
-    onCreateTodo {
+export const onCreateLoggedVisit = /* GraphQL */ `
+  subscription OnCreateLoggedVisit {
+    onCreateLoggedVisit {
       id
       name
-      description
+      signin
+      signout
+      contacts
+      location
       createdAt
       updatedAt
     }
   }
 `;
-export const onUpdateTodo = /* GraphQL */ `
-  subscription OnUpdateTodo {
-    onUpdateTodo {
+export const onUpdateLoggedVisit = /* GraphQL */ `
+  subscription OnUpdateLoggedVisit {
+    onUpdateLoggedVisit {
       id
       name
-      description
+      signin
+      signout
+      contacts
+      location
       createdAt
       updatedAt
     }
   }
 `;
-export const onDeleteTodo = /* GraphQL */ `
-  subscription OnDeleteTodo {
-    onDeleteTodo {
+export const onDeleteLoggedVisit = /* GraphQL */ `
+  subscription OnDeleteLoggedVisit {
+    onDeleteLoggedVisit {
       id
       name
-      description
+      signin
+      signout
+      contacts
+      location
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateSignedInUser = /* GraphQL */ `
+  subscription OnCreateSignedInUser {
+    onCreateSignedInUser {
+      id
+      name
+      signin
+      location
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onUpdateSignedInUser = /* GraphQL */ `
+  subscription OnUpdateSignedInUser {
+    onUpdateSignedInUser {
+      id
+      name
+      signin
+      location
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onDeleteSignedInUser = /* GraphQL */ `
+  subscription OnDeleteSignedInUser {
+    onDeleteSignedInUser {
+      id
+      name
+      signin
+      location
       createdAt
       updatedAt
     }

@@ -2,43 +2,97 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
-export const createTodo = /* GraphQL */ `
-  mutation CreateTodo(
-    $input: CreateTodoInput!
-    $condition: ModelTodoConditionInput
+export const createLoggedVisit = /* GraphQL */ `
+  mutation CreateLoggedVisit(
+    $input: CreateLoggedVisitInput!
+    $condition: ModelLoggedVisitConditionInput
   ) {
-    createTodo(input: $input, condition: $condition) {
+    createLoggedVisit(input: $input, condition: $condition) {
       id
       name
-      description
+      signin
+      signout
+      contacts
+      location
       createdAt
       updatedAt
     }
   }
 `;
-export const updateTodo = /* GraphQL */ `
-  mutation UpdateTodo(
-    $input: UpdateTodoInput!
-    $condition: ModelTodoConditionInput
+export const updateLoggedVisit = /* GraphQL */ `
+  mutation UpdateLoggedVisit(
+    $input: UpdateLoggedVisitInput!
+    $condition: ModelLoggedVisitConditionInput
   ) {
-    updateTodo(input: $input, condition: $condition) {
+    updateLoggedVisit(input: $input, condition: $condition) {
       id
       name
-      description
+      signin
+      signout
+      contacts
+      location
       createdAt
       updatedAt
     }
   }
 `;
-export const deleteTodo = /* GraphQL */ `
-  mutation DeleteTodo(
-    $input: DeleteTodoInput!
-    $condition: ModelTodoConditionInput
+export const deleteLoggedVisit = /* GraphQL */ `
+  mutation DeleteLoggedVisit(
+    $input: DeleteLoggedVisitInput!
+    $condition: ModelLoggedVisitConditionInput
   ) {
-    deleteTodo(input: $input, condition: $condition) {
+    deleteLoggedVisit(input: $input, condition: $condition) {
       id
       name
-      description
+      signin
+      signout
+      contacts
+      location
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const createSignedInUser = /* GraphQL */ `
+  mutation CreateSignedInUser(
+    $input: CreateSignedInUserInput!
+    $condition: ModelSignedInUserConditionInput
+  ) {
+    createSignedInUser(input: $input, condition: $condition) {
+      id
+      name
+      signin
+      location
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const updateSignedInUser = /* GraphQL */ `
+  mutation UpdateSignedInUser(
+    $input: UpdateSignedInUserInput!
+    $condition: ModelSignedInUserConditionInput
+  ) {
+    updateSignedInUser(input: $input, condition: $condition) {
+      id
+      name
+      signin
+      location
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const deleteSignedInUser = /* GraphQL */ `
+  mutation DeleteSignedInUser(
+    $input: DeleteSignedInUserInput!
+    $condition: ModelSignedInUserConditionInput
+  ) {
+    deleteSignedInUser(input: $input, condition: $condition) {
+      id
+      name
+      signin
+      location
       createdAt
       updatedAt
     }

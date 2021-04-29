@@ -5,18 +5,19 @@ import logo from './logo.svg';
 import { uuid } from 'uuidv4';
 
 import Amplify, { API, graphqlOperation } from 'aws-amplify';
+import { GraphQLResult } from '@aws-amplify/api'
 import { AmplifyAuthenticator, AmplifySignUp, AmplifySignOut } from '@aws-amplify/ui-react'
 import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components'
 
-import { listTodos } from './graphql/queries';
-import { createTodo, updateTodo, deleteTodo } from './graphql/mutations';
-import { onCreateTodo } from './graphql/subscriptions';
+import { listSignedInUsers } from './graphql/queries';
+import { createSignedInUser, updateSignedInUser, deleteSignedInUser } from './graphql/mutations';
+import { onCreateSignedInUser } from './graphql/subscriptions';
 
 
 import aws_exports from './aws-exports';
-import { ListTodosQuery } from './API';
-import CurrentVisitor from './CurrentVisitor';
-import VisitorList from './VisitorList';
+import { ListSignedInUsersQuery } from './API';
+import CurrentVisitor from './components/CurrentVisitor';
+import VisitorList from './components/VisitorList';
 
 Amplify.configure(aws_exports);
 
@@ -38,15 +39,17 @@ const AuthStateApp: React.FunctionComponent = () => {
     });
   }, []);
 
-  // Subscribe to creation of Todo
-  const todos = (API.graphql({ query: listTodos }) as Promise<ListTodosQuery[]>);
-  const tasklist = todos.then((list) => list)
-  console.log(tasklist)
+  const getSignedIn = async () => (await (API.graphql({ query: listSignedInUsers }))) as GraphQLResult<ListSignedInUsersQuery>
+  const currentSignins =  getSignedIn().then( result => result.data?.listSignedInUsers?.items);
 
   return authState === AuthState.SignedIn && user ? (
     <div className="App">
       <div>Hello, {user.username}</div>
-      <VisitorList visitors={tasklist}/>
+      <br/>
+      <div>
+        <h2>Currently Signed in:</h2>
+        <VisitorList visitors={currentSignins}/>
+      </div>
       <AmplifySignOut />
     </div>
   ) : (

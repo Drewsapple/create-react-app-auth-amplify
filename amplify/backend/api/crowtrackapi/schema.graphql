@@ -1,5 +1,16 @@
-type Todo @model {
+type LoggedVisit @model @auth(rules: [{allow: private}]) {
+  id: ID!
+  name: String
+  signin: AWSDateTime
+  signout: AWSDateTime
+  contacts: [String]
+  location: String
+}
+
+type SignedInUser @model @auth(rules: [{allow: private}]) {
   id: ID!
   name: String!
-  description: String
+  signin: AWSDateTime
+  location: String
 }
+ 
