@@ -174,6 +174,22 @@ export type ModelSignedInUserConnection = {
   nextToken?: string | null,
 };
 
+export type ModelStringKeyConditionInput = {
+  eq?: string | null,
+  le?: string | null,
+  lt?: string | null,
+  ge?: string | null,
+  gt?: string | null,
+  between?: Array< string | null > | null,
+  beginsWith?: string | null,
+};
+
+export enum ModelSortDirection {
+  ASC = "ASC",
+  DESC = "DESC",
+}
+
+
 export type CreateLoggedVisitMutationVariables = {
   input?: CreateLoggedVisitInput,
   condition?: ModelLoggedVisitConditionInput | null,
@@ -348,6 +364,31 @@ export type ListSignedInUsersQueryVariables = {
 
 export type ListSignedInUsersQuery = {
   listSignedInUsers?:  {
+    __typename: "ModelSignedInUserConnection",
+    items?:  Array< {
+      __typename: "SignedInUser",
+      id: string,
+      name: string,
+      signin?: string | null,
+      location?: string | null,
+      createdAt: string,
+      updatedAt: string,
+    } | null > | null,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type SignedInUserByArrivalQueryVariables = {
+  name?: string | null,
+  signin?: ModelStringKeyConditionInput | null,
+  sortDirection?: ModelSortDirection | null,
+  filter?: ModelSignedInUserFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+};
+
+export type SignedInUserByArrivalQuery = {
+  signedInUserByArrival?:  {
     __typename: "ModelSignedInUserConnection",
     items?:  Array< {
       __typename: "SignedInUser",

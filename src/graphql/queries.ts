@@ -68,3 +68,32 @@ export const listSignedInUsers = /* GraphQL */ `
     }
   }
 `;
+export const signedInUserByArrival = /* GraphQL */ `
+  query SignedInUserByArrival(
+    $name: String
+    $signin: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelSignedInUserFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    signedInUserByArrival(
+      name: $name
+      signin: $signin
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        name
+        signin
+        location
+        createdAt
+        updatedAt
+      }
+      nextToken
+    }
+  }
+`;

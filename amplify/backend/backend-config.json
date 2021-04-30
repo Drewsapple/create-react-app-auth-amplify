@@ -8,7 +8,7 @@
     }
   },
   "api": {
-    "crowtrackapi": {
+    "crowtrack": {
       "service": "AppSync",
       "providerPlugin": "awscloudformation",
       "output": {
@@ -19,11 +19,7 @@
               "userPoolId": "authcreatereactappauthamplify"
             }
           },
-          "additionalAuthenticationProviders": [
-            {
-              "authenticationType": "AWS_IAM"
-            }
-          ]
+          "additionalAuthenticationProviders": []
         }
       }
     }
