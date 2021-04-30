@@ -16,7 +16,6 @@ import { onCreateSignedInUser } from './graphql/subscriptions';
 
 import aws_exports from './aws-exports';
 import { ListSignedInUsersQuery } from './API';
-import CurrentVisitor from './components/CurrentVisitor';
 import VisitorList from './components/VisitorList';
 
 Amplify.configure(aws_exports);

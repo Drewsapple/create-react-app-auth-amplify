@@ -1,5 +1,7 @@
+import { API, graphqlOperation } from 'aws-amplify';
 import React, { useEffect, useState } from 'react'
-import CurrentVisitor from './CurrentVisitor'
+import { deleteSignedInUser } from '../graphql/mutations';
+import { SignedInUser } from '../API';
 
 export default function VisitorList(props){
     const [currentSignins, setCurrentSignins] = useState([]);
@@ -12,10 +14,19 @@ export default function VisitorList(props){
         getVisitors()
     }, [props])
 
+    async function signout(id: string) {
+        await API.graphql(graphqlOperation(deleteSignedInUser, { input: { id: id}}))
+        console.log("deleted user " + id)
+    }
+
     return (
         <div>
             {
-                currentSignins?.map( (signin) => <CurrentVisitor visitor={signin} />)
+                (currentSignins as SignedInUser[]).map( ( signin ) => (
+                    <div>
+                        <span>{signin.name} {signin.signin}</span> <button onClick={() => {signout(signin.id as string) }} >Delet </button>
+                    </div>
+                ))
             }
         </div>
     )
