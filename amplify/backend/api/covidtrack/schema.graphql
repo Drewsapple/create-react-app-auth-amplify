@@ -1,0 +1,18 @@
+type LoggedVisit @model @auth(rules: [{allow: groups, groups: ["AllUsers"], provider: userPools}]) {
+  id: ID!
+  user: String!
+  signin: AWSDateTime!
+  signout: AWSDateTime!
+  location: String!
+  contacts: [String!]
+}
+
+type SignedInUser @model @auth(rules: [
+      { allow: groups, groups: ["AllUsers"], operations: [read, update, delete], provider: userPools},
+      { allow: groups, groups: ["AllUsers"], provider: userPools},
+    ]) {
+  id: ID!
+  user: String!
+  signin: AWSDateTime!
+  location: String!
+}

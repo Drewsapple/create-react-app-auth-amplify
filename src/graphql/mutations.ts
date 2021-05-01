@@ -9,11 +9,11 @@ export const createLoggedVisit = /* GraphQL */ `
   ) {
     createLoggedVisit(input: $input, condition: $condition) {
       id
-      name
+      user
       signin
       signout
-      contacts
       location
+      contacts
       createdAt
       updatedAt
     }
@@ -26,11 +26,11 @@ export const updateLoggedVisit = /* GraphQL */ `
   ) {
     updateLoggedVisit(input: $input, condition: $condition) {
       id
-      name
+      user
       signin
       signout
-      contacts
       location
+      contacts
       createdAt
       updatedAt
     }
@@ -43,11 +43,11 @@ export const deleteLoggedVisit = /* GraphQL */ `
   ) {
     deleteLoggedVisit(input: $input, condition: $condition) {
       id
-      name
+      user
       signin
       signout
-      contacts
       location
+      contacts
       createdAt
       updatedAt
     }
@@ -60,7 +60,7 @@ export const createSignedInUser = /* GraphQL */ `
   ) {
     createSignedInUser(input: $input, condition: $condition) {
       id
-      name
+      user
       signin
       location
       createdAt
@@ -75,7 +75,7 @@ export const updateSignedInUser = /* GraphQL */ `
   ) {
     updateSignedInUser(input: $input, condition: $condition) {
       id
-      name
+      user
       signin
       location
       createdAt
@@ -90,7 +90,7 @@ export const deleteSignedInUser = /* GraphQL */ `
   ) {
     deleteSignedInUser(input: $input, condition: $condition) {
       id
-      name
+      user
       signin
       location
       createdAt

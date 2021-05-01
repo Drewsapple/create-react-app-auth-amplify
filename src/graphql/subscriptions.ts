@@ -6,11 +6,11 @@ export const onCreateLoggedVisit = /* GraphQL */ `
   subscription OnCreateLoggedVisit {
     onCreateLoggedVisit {
       id
-      name
+      user
       signin
       signout
-      contacts
       location
+      contacts
       createdAt
       updatedAt
     }
@@ -20,11 +20,11 @@ export const onUpdateLoggedVisit = /* GraphQL */ `
   subscription OnUpdateLoggedVisit {
     onUpdateLoggedVisit {
       id
-      name
+      user
       signin
       signout
-      contacts
       location
+      contacts
       createdAt
       updatedAt
     }
@@ -34,11 +34,11 @@ export const onDeleteLoggedVisit = /* GraphQL */ `
   subscription OnDeleteLoggedVisit {
     onDeleteLoggedVisit {
       id
-      name
+      user
       signin
       signout
-      contacts
       location
+      contacts
       createdAt
       updatedAt
     }
@@ -48,7 +48,7 @@ export const onCreateSignedInUser = /* GraphQL */ `
   subscription OnCreateSignedInUser {
     onCreateSignedInUser {
       id
-      name
+      user
       signin
       location
       createdAt
@@ -60,7 +60,7 @@ export const onUpdateSignedInUser = /* GraphQL */ `
   subscription OnUpdateSignedInUser {
     onUpdateSignedInUser {
       id
-      name
+      user
       signin
       location
       createdAt
@@ -72,7 +72,7 @@ export const onDeleteSignedInUser = /* GraphQL */ `
   subscription OnDeleteSignedInUser {
     onDeleteSignedInUser {
       id
-      name
+      user
       signin
       location
       createdAt

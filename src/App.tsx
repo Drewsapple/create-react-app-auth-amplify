@@ -2,8 +2,6 @@ import React from 'react';
 import './App.css';
 import logo from './logo.svg';
 
-import { uuid } from 'uuidv4';
-
 import Amplify, { API, graphqlOperation } from 'aws-amplify';
 import { GraphQLResult } from '@aws-amplify/api'
 import { AmplifyAuthenticator, AmplifySignUp, AmplifySignOut } from '@aws-amplify/ui-react'
@@ -17,10 +15,9 @@ import { onCreateSignedInUser } from './graphql/subscriptions';
 
 
 import aws_exports from './aws-exports';
-import { ListSignedInUsersQuery } from './API';
+import { CreateSignedInUserInput, ListSignedInUsersQuery } from './API';
 import VisitorList from './components/VisitorList';
 import moment from 'moment';
-import classes from '*.module.css';
 
 Amplify.configure(aws_exports);
 
@@ -43,12 +40,11 @@ const AuthStateApp: React.FunctionComponent = () => {
     <div className="App">
       <AppBar position="static">
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          <IconButton edge="start" className="menuButton" color="inherit" aria-label="menu">
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6" className="title">
             Hello, {user.username}
           </Typography>
-          <Button color="inherit">Login</Button>
           <AmplifySignOut/>
         </Toolbar>
       </AppBar>
@@ -56,10 +52,15 @@ const AuthStateApp: React.FunctionComponent = () => {
       <h2>Currently Signed in:</h2>
       <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center'}} >
         <VisitorList />
-        {false ? <p>at capacity</p> : <Button variant="contained" onClick={async () => {
-            console.log(await API.graphql(graphqlOperation(createSignedInUser, {input: { name: user.username, location: "8", signin: moment().format() }}) ))
+        {false ? 
+        <p>at capacity</p>
+        :
+        <Button variant="contained" onClick={async () => 
+          {
+            console.log(await API.graphql(graphqlOperation(createSignedInUser, {input: { user: user.username, location: "8", signin: moment().format()}} )))
+            
           }
-          } > Check in to the house</Button>}
+        } > Check in to the house</Button>}
       </div>
     </div>
   ) : (

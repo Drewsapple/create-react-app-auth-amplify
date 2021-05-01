@@ -6,11 +6,11 @@ export const getLoggedVisit = /* GraphQL */ `
   query GetLoggedVisit($id: ID!) {
     getLoggedVisit(id: $id) {
       id
-      name
+      user
       signin
       signout
-      contacts
       location
+      contacts
       createdAt
       updatedAt
     }
@@ -25,11 +25,11 @@ export const listLoggedVisits = /* GraphQL */ `
     listLoggedVisits(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
+        user
         signin
         signout
-        contacts
         location
+        contacts
         createdAt
         updatedAt
       }
@@ -41,7 +41,7 @@ export const getSignedInUser = /* GraphQL */ `
   query GetSignedInUser($id: ID!) {
     getSignedInUser(id: $id) {
       id
-      name
+      user
       signin
       location
       createdAt
@@ -58,36 +58,7 @@ export const listSignedInUsers = /* GraphQL */ `
     listSignedInUsers(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
-        name
-        signin
-        location
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-`;
-export const signedInUserByArrival = /* GraphQL */ `
-  query SignedInUserByArrival(
-    $name: String
-    $signin: ModelStringKeyConditionInput
-    $sortDirection: ModelSortDirection
-    $filter: ModelSignedInUserFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
-    signedInUserByArrival(
-      name: $name
-      signin: $signin
-      sortDirection: $sortDirection
-      filter: $filter
-      limit: $limit
-      nextToken: $nextToken
-    ) {
-      items {
-        id
-        name
+        user
         signin
         location
         createdAt

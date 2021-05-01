@@ -4,19 +4,19 @@
 
 export type CreateLoggedVisitInput = {
   id?: string | null,
-  name?: string | null,
-  signin?: string | null,
-  signout?: string | null,
-  contacts?: Array< string | null > | null,
-  location?: string | null,
+  user: string,
+  signin: string,
+  signout: string,
+  location: string,
+  contacts?: Array< string > | null,
 };
 
 export type ModelLoggedVisitConditionInput = {
-  name?: ModelStringInput | null,
+  user?: ModelStringInput | null,
   signin?: ModelStringInput | null,
   signout?: ModelStringInput | null,
-  contacts?: ModelStringInput | null,
   location?: ModelStringInput | null,
+  contacts?: ModelStringInput | null,
   and?: Array< ModelLoggedVisitConditionInput | null > | null,
   or?: Array< ModelLoggedVisitConditionInput | null > | null,
   not?: ModelLoggedVisitConditionInput | null,
@@ -65,22 +65,22 @@ export type ModelSizeInput = {
 export type LoggedVisit = {
   __typename: "LoggedVisit",
   id?: string,
-  name?: string | null,
-  signin?: string | null,
-  signout?: string | null,
-  contacts?: Array< string | null > | null,
-  location?: string | null,
+  user?: string,
+  signin?: string,
+  signout?: string,
+  location?: string,
+  contacts?: Array< string > | null,
   createdAt?: string,
   updatedAt?: string,
 };
 
 export type UpdateLoggedVisitInput = {
   id: string,
-  name?: string | null,
+  user?: string | null,
   signin?: string | null,
   signout?: string | null,
-  contacts?: Array< string | null > | null,
   location?: string | null,
+  contacts?: Array< string > | null,
 };
 
 export type DeleteLoggedVisitInput = {
@@ -89,13 +89,13 @@ export type DeleteLoggedVisitInput = {
 
 export type CreateSignedInUserInput = {
   id?: string | null,
-  name: string,
-  signin?: string | null,
-  location?: string | null,
+  user: string,
+  signin: string,
+  location: string,
 };
 
 export type ModelSignedInUserConditionInput = {
-  name?: ModelStringInput | null,
+  user?: ModelStringInput | null,
   signin?: ModelStringInput | null,
   location?: ModelStringInput | null,
   and?: Array< ModelSignedInUserConditionInput | null > | null,
@@ -106,16 +106,16 @@ export type ModelSignedInUserConditionInput = {
 export type SignedInUser = {
   __typename: "SignedInUser",
   id?: string,
-  name?: string,
-  signin?: string | null,
-  location?: string | null,
+  user?: string,
+  signin?: string,
+  location?: string,
   createdAt?: string,
   updatedAt?: string,
 };
 
 export type UpdateSignedInUserInput = {
   id: string,
-  name?: string | null,
+  user?: string | null,
   signin?: string | null,
   location?: string | null,
 };
@@ -126,11 +126,11 @@ export type DeleteSignedInUserInput = {
 
 export type ModelLoggedVisitFilterInput = {
   id?: ModelIDInput | null,
-  name?: ModelStringInput | null,
+  user?: ModelStringInput | null,
   signin?: ModelStringInput | null,
   signout?: ModelStringInput | null,
-  contacts?: ModelStringInput | null,
   location?: ModelStringInput | null,
+  contacts?: ModelStringInput | null,
   and?: Array< ModelLoggedVisitFilterInput | null > | null,
   or?: Array< ModelLoggedVisitFilterInput | null > | null,
   not?: ModelLoggedVisitFilterInput | null,
@@ -160,7 +160,7 @@ export type ModelLoggedVisitConnection = {
 
 export type ModelSignedInUserFilterInput = {
   id?: ModelIDInput | null,
-  name?: ModelStringInput | null,
+  user?: ModelStringInput | null,
   signin?: ModelStringInput | null,
   location?: ModelStringInput | null,
   and?: Array< ModelSignedInUserFilterInput | null > | null,
@@ -174,22 +174,6 @@ export type ModelSignedInUserConnection = {
   nextToken?: string | null,
 };
 
-export type ModelStringKeyConditionInput = {
-  eq?: string | null,
-  le?: string | null,
-  lt?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  between?: Array< string | null > | null,
-  beginsWith?: string | null,
-};
-
-export enum ModelSortDirection {
-  ASC = "ASC",
-  DESC = "DESC",
-}
-
-
 export type CreateLoggedVisitMutationVariables = {
   input?: CreateLoggedVisitInput,
   condition?: ModelLoggedVisitConditionInput | null,
@@ -199,11 +183,11 @@ export type CreateLoggedVisitMutation = {
   createLoggedVisit?:  {
     __typename: "LoggedVisit",
     id: string,
-    name?: string | null,
-    signin?: string | null,
-    signout?: string | null,
-    contacts?: Array< string | null > | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    signout: string,
+    location: string,
+    contacts?: Array< string > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -218,11 +202,11 @@ export type UpdateLoggedVisitMutation = {
   updateLoggedVisit?:  {
     __typename: "LoggedVisit",
     id: string,
-    name?: string | null,
-    signin?: string | null,
-    signout?: string | null,
-    contacts?: Array< string | null > | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    signout: string,
+    location: string,
+    contacts?: Array< string > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -237,11 +221,11 @@ export type DeleteLoggedVisitMutation = {
   deleteLoggedVisit?:  {
     __typename: "LoggedVisit",
     id: string,
-    name?: string | null,
-    signin?: string | null,
-    signout?: string | null,
-    contacts?: Array< string | null > | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    signout: string,
+    location: string,
+    contacts?: Array< string > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -256,9 +240,9 @@ export type CreateSignedInUserMutation = {
   createSignedInUser?:  {
     __typename: "SignedInUser",
     id: string,
-    name: string,
-    signin?: string | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    location: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -273,9 +257,9 @@ export type UpdateSignedInUserMutation = {
   updateSignedInUser?:  {
     __typename: "SignedInUser",
     id: string,
-    name: string,
-    signin?: string | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    location: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -290,9 +274,9 @@ export type DeleteSignedInUserMutation = {
   deleteSignedInUser?:  {
     __typename: "SignedInUser",
     id: string,
-    name: string,
-    signin?: string | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    location: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -306,11 +290,11 @@ export type GetLoggedVisitQuery = {
   getLoggedVisit?:  {
     __typename: "LoggedVisit",
     id: string,
-    name?: string | null,
-    signin?: string | null,
-    signout?: string | null,
-    contacts?: Array< string | null > | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    signout: string,
+    location: string,
+    contacts?: Array< string > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -328,11 +312,11 @@ export type ListLoggedVisitsQuery = {
     items?:  Array< {
       __typename: "LoggedVisit",
       id: string,
-      name?: string | null,
-      signin?: string | null,
-      signout?: string | null,
-      contacts?: Array< string | null > | null,
-      location?: string | null,
+      user: string,
+      signin: string,
+      signout: string,
+      location: string,
+      contacts?: Array< string > | null,
       createdAt: string,
       updatedAt: string,
     } | null > | null,
@@ -348,9 +332,9 @@ export type GetSignedInUserQuery = {
   getSignedInUser?:  {
     __typename: "SignedInUser",
     id: string,
-    name: string,
-    signin?: string | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    location: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -368,34 +352,9 @@ export type ListSignedInUsersQuery = {
     items?:  Array< {
       __typename: "SignedInUser",
       id: string,
-      name: string,
-      signin?: string | null,
-      location?: string | null,
-      createdAt: string,
-      updatedAt: string,
-    } | null > | null,
-    nextToken?: string | null,
-  } | null,
-};
-
-export type SignedInUserByArrivalQueryVariables = {
-  name?: string | null,
-  signin?: ModelStringKeyConditionInput | null,
-  sortDirection?: ModelSortDirection | null,
-  filter?: ModelSignedInUserFilterInput | null,
-  limit?: number | null,
-  nextToken?: string | null,
-};
-
-export type SignedInUserByArrivalQuery = {
-  signedInUserByArrival?:  {
-    __typename: "ModelSignedInUserConnection",
-    items?:  Array< {
-      __typename: "SignedInUser",
-      id: string,
-      name: string,
-      signin?: string | null,
-      location?: string | null,
+      user: string,
+      signin: string,
+      location: string,
       createdAt: string,
       updatedAt: string,
     } | null > | null,
@@ -407,11 +366,11 @@ export type OnCreateLoggedVisitSubscription = {
   onCreateLoggedVisit?:  {
     __typename: "LoggedVisit",
     id: string,
-    name?: string | null,
-    signin?: string | null,
-    signout?: string | null,
-    contacts?: Array< string | null > | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    signout: string,
+    location: string,
+    contacts?: Array< string > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -421,11 +380,11 @@ export type OnUpdateLoggedVisitSubscription = {
   onUpdateLoggedVisit?:  {
     __typename: "LoggedVisit",
     id: string,
-    name?: string | null,
-    signin?: string | null,
-    signout?: string | null,
-    contacts?: Array< string | null > | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    signout: string,
+    location: string,
+    contacts?: Array< string > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -435,11 +394,11 @@ export type OnDeleteLoggedVisitSubscription = {
   onDeleteLoggedVisit?:  {
     __typename: "LoggedVisit",
     id: string,
-    name?: string | null,
-    signin?: string | null,
-    signout?: string | null,
-    contacts?: Array< string | null > | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    signout: string,
+    location: string,
+    contacts?: Array< string > | null,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -449,9 +408,9 @@ export type OnCreateSignedInUserSubscription = {
   onCreateSignedInUser?:  {
     __typename: "SignedInUser",
     id: string,
-    name: string,
-    signin?: string | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    location: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -461,9 +420,9 @@ export type OnUpdateSignedInUserSubscription = {
   onUpdateSignedInUser?:  {
     __typename: "SignedInUser",
     id: string,
-    name: string,
-    signin?: string | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    location: string,
     createdAt: string,
     updatedAt: string,
   } | null,
@@ -473,9 +432,9 @@ export type OnDeleteSignedInUserSubscription = {
   onDeleteSignedInUser?:  {
     __typename: "SignedInUser",
     id: string,
-    name: string,
-    signin?: string | null,
-    location?: string | null,
+    user: string,
+    signin: string,
+    location: string,
     createdAt: string,
     updatedAt: string,
   } | null,
