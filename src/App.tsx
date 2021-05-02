@@ -16,13 +16,19 @@ import { onCreateSignedInUser } from './graphql/subscriptions';
 
 import aws_exports from './aws-exports';
 import { CreateSignedInUserInput, ListSignedInUsersQuery } from './API';
-import VisitorList from './components/VisitorList';
 import moment from 'moment';
+import CurrentVisitors from './components/CurrentVisitors';
+import LoggedVisits from './components/LoggedVisits';
 
 Amplify.configure(aws_exports);
 
 interface CognitoUser {
-  username: string
+  username: string,
+  attributes: {
+    email: string,
+    name: string,
+    phone_number: string,
+  }
 }
 
 const AuthStateApp: React.FunctionComponent = () => {
@@ -45,23 +51,12 @@ const AuthStateApp: React.FunctionComponent = () => {
           <Typography variant="h6" className="title">
             Hello, {user.username}
           </Typography>
-          <AmplifySignOut/>
+          <AmplifySignOut />
         </Toolbar>
       </AppBar>
       <br/>
-      <h2>Currently Signed in:</h2>
-      <div style={{ textAlign: 'center', display: 'flex', justifyContent: 'center'}} >
-        <VisitorList />
-        {false ? 
-        <p>at capacity</p>
-        :
-        <Button variant="contained" onClick={async () => 
-          {
-            console.log(await API.graphql(graphqlOperation(createSignedInUser, {input: { user: user.username, location: "8", signin: moment().format()}} )))
-            
-          }
-        } > Check in to the house</Button>}
-      </div>
+      <CurrentVisitors user={user}/>
+      <LoggedVisits />
     </div>
   ) : (
       <AmplifyAuthenticator>

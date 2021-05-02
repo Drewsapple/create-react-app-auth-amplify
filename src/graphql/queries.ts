@@ -44,6 +44,7 @@ export const getSignedInUser = /* GraphQL */ `
       user
       signin
       location
+      contacts
       createdAt
       updatedAt
     }
@@ -61,6 +62,7 @@ export const listSignedInUsers = /* GraphQL */ `
         user
         signin
         location
+        contacts
         createdAt
         updatedAt
       }

@@ -23,5 +23,12 @@
         }
       }
     }
+  },
+  "function": {
+    "allusersadder": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
   }
 }

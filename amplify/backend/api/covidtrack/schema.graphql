@@ -4,7 +4,7 @@ type LoggedVisit @model @auth(rules: [{allow: groups, groups: ["AllUsers"], prov
   signin: AWSDateTime!
   signout: AWSDateTime!
   location: String!
-  contacts: [String!]
+  contacts: [String!]!
 }
 
 type SignedInUser @model @auth(rules: [
@@ -15,4 +15,5 @@ type SignedInUser @model @auth(rules: [
   user: String!
   signin: AWSDateTime!
   location: String!
+  contacts: [String!]
 }

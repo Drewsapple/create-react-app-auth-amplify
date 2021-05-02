@@ -63,6 +63,7 @@ export const createSignedInUser = /* GraphQL */ `
       user
       signin
       location
+      contacts
       createdAt
       updatedAt
     }
@@ -78,6 +79,7 @@ export const updateSignedInUser = /* GraphQL */ `
       user
       signin
       location
+      contacts
       createdAt
       updatedAt
     }
@@ -93,6 +95,7 @@ export const deleteSignedInUser = /* GraphQL */ `
       user
       signin
       location
+      contacts
       createdAt
       updatedAt
     }

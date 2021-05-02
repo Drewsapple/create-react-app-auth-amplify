@@ -15,6 +15,12 @@
       "auth": {
         "cognitocf0c6096": {},
         "createreactappauthamplify": {}
+      },
+      "function": {
+        "allusersadder": {
+          "deploymentBucketName": "amplify-authcra-devt-110717-deployment",
+          "s3Key": "amplify-builds/allusersadder-62597857465869487573-build.zip"
+        }
       }
     }
   }
