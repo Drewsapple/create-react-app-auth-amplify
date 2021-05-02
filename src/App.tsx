@@ -3,15 +3,12 @@ import "./App.css";
 //import logo from './logo.svg';
 
 import Amplify, { Auth, Hub } from "aws-amplify";
-import { Authenticator, } from "aws-amplify-react";
+import { CognitoUser } from "amazon-cognito-identity-js"
 import { AuthState, onAuthUIStateChange } from "@aws-amplify/ui-components";
 
 import { AppContext } from "./libs/contextLib";
 
 import { makeStyles } from "@material-ui/core/styles";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Icon from "@material-ui/core/Icon";
-import { Email, People } from "@material-ui/icons";
 import {
   AppBar,
   Container,
@@ -20,7 +17,6 @@ import {
   Paper,
   Toolbar,
   Typography,
-  Card,
   Button,
 } from "@material-ui/core";
 //import { Header, Footer, HeaderLinks, GridItem, GridContainer, CardBody, CardHeader, CardFooter, CustomInput} from 'material-kit-react'
@@ -49,17 +45,9 @@ Amplify.configure({
   "aws_appsync_region": aws_exports.aws_appsync_region,
 });
 
-interface CognitoUser {
-  username: string;
-  attributes: {
-    email: string;
-    name: string;
-    phone_number: string;
-  };
-}
 
 const AuthStateApp: React.FunctionComponent = () => {
-  const [authState, setAuthState] = React.useState<AuthState>(AuthState.Loading);
+  const [authState, setAuthState] = React.useState<AuthState>(AuthState.SignedIn);
   const [user, setUser] = React.useState<CognitoUser>();
 
   React.useEffect(() => {
@@ -69,6 +57,13 @@ const AuthStateApp: React.FunctionComponent = () => {
       setUser(authData as CognitoUser);
     });
   }, []);
+
+  React.useEffect(() => {
+    Auth.currentAuthenticatedUser().then( (value) => {
+      setUser(value.attributes);
+    })
+  }, [user])
+
 
   React.useEffect(() => {
     Hub.listen('auth', (data) => {
@@ -197,7 +192,7 @@ const AuthStateApp: React.FunctionComponent = () => {
                           aria-label="menu"
                         ></IconButton>
                         <Typography variant="h6" className="title">
-                          Hello, {user.username}
+                          Hello, {user.getUsername()}
                         </Typography>
                         <Button variant="outlined" onClick={signOut}>
                           Log Out
