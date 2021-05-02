@@ -1,7 +1,7 @@
 import {Callback, Context, PostConfirmationTriggerEvent} from 'aws-lambda';
 import AWS from 'aws-sdk';
 
-export async function main(
+exports.handler = async function main(
   event: PostConfirmationTriggerEvent,
   _context: Context,
   callback: Callback,

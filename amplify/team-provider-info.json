@@ -19,7 +19,7 @@
       "function": {
         "allusersadder": {
           "deploymentBucketName": "amplify-authcra-devt-110717-deployment",
-          "s3Key": "amplify-builds/allusersadder-62597857465869487573-build.zip"
+          "s3Key": "amplify-builds/allusersadder-6d7a3031775749467535-build.zip"
         }
       }
     }

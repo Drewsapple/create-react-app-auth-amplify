@@ -13,13 +13,14 @@ export default function CurrentVisitors(props){
 
     async function updateLoggedUsers() {
         let query = (await API.graphql(graphqlOperation(listLoggedVisits)) as GraphQLResult<ListLoggedVisitsQuery>)
-        setCurrentSignins(query.data?.listLoggedVisits?.items?.sort((a, b) => (Date.parse(b?.signin as string) - Date.parse(a?.signin as string)) ) as LoggedVisit[])
+        setCurrentSignins(query.data?.listLoggedVisits?.items?.sort((a, b) => (Date.parse(b?.signout as string) - Date.parse(a?.signout as string)) ) as LoggedVisit[])
     }
 
     useEffect(function(){updateLoggedUsers()}, [])
 
     return (
-    <div>
+    <div style={{ textAlign: 'center', display: 'grid', justifyContent: 'center'}}>
+        <h2>History of Visitors</h2>
     <table>
         <thead>
             <tr>
@@ -35,7 +36,10 @@ export default function CurrentVisitors(props){
                     <td>{signin.user}</td> 
                     <td>{ moment(Date.parse(signin.signin as string)).fromNow()}</td>
                     <td>{ moment(Date.parse(signin.signout as string)).fromNow()}</td>
-                    <td><ContactList names={currentSignins.map((user) => user.user || "")}/></td>
+                    <td><ContactList 
+                    onSelectedChange={function(){}} 
+                    selected={signin.contacts} 
+                    names={signin.contacts}/></td>
                 </tr>
             ))
         }

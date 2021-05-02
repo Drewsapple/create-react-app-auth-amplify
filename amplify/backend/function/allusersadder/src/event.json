@@ -1,5 +1,5 @@
 {
-  "key1": "value1",
-  "key2": "value2",
-  "key3": "value3"
+  "userPoolId": "the-user-pool-id",
+  "userName": "user1",
+  "userPoolGroupName": "Users"
 }

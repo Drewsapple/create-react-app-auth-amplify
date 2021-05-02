@@ -5,6 +5,8 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import { API, graphqlOperation } from 'aws-amplify';
+import { updateSignedInUser } from '../graphql/mutations';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -46,25 +48,17 @@ function getStyles(name: string, personName: string[], theme: Theme) {
   };
 }
 
-export default function MultipleSelect(props) {
+export default function ContactList(props) {
   const classes = useStyles();
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState<string[]>([]);
+  const [names, setNames] = React.useState<string[]>(props.selected);
 
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    console.log(event.target.value)
-    setPersonName(event.target.value as string[]);
-  };
-
-  const handleChangeMultiple = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const { options } = event.target as HTMLSelectElement;
-    const value: string[] = [];
-    for (let i = 0, l = options.length; i < l; i += 1) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-      }
-    }
-    setPersonName(value);
+  const handleChange = props.handleChange ? props.handleChange : 
+  async (event: React.ChangeEvent<{ value: unknown }>) => {
+    let names = event.target.value as string[]
+    console.log(await API.graphql(graphqlOperation(updateSignedInUser, {input: {id: props.id, contacts: names}})))
+    setNames(names);
+    props.onSelectedChange(names);
   };
 
   return (
@@ -75,7 +69,7 @@ export default function MultipleSelect(props) {
           labelId="demo-mutiple-name-label"
           id="contact-list"
           multiple
-          value={personName}
+          value={names}
           onChange={handleChange}
           input={<Input />}
           MenuProps={MenuProps}
@@ -84,7 +78,7 @@ export default function MultipleSelect(props) {
             <MenuItem
               key={name}
               value={name}
-              style={getStyles(name, personName, theme)}
+              style={getStyles(name, names, theme)}
             >
               {name}
             </MenuItem>

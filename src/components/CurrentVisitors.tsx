@@ -6,12 +6,13 @@ import { ListSignedInUsersQuery, SignedInUser } from '../API';
 import { listSignedInUsers } from '../graphql/queries';
 import moment from 'moment';
 
-import { Button, Menu, MenuItem } from '@material-ui/core'
+import { Button} from '@material-ui/core'
 import ContactList from './ContactList';
-import { CognitoUser } from '@aws-amplify/auth';
 
 export default function CurrentVisitors(props){
     const [currentSignins, setCurrentSignins] = useState<SignedInUser[]>([]);
+
+    var tempContacts: string[] = []
 
     async function updateSignedInUsers() {
         let query = (await API.graphql(graphqlOperation(listSignedInUsers)) as GraphQLResult<ListSignedInUsersQuery>)
@@ -21,9 +22,22 @@ export default function CurrentVisitors(props){
     useEffect(function(){updateSignedInUsers()}, [])
 
     async function signout(signin: SignedInUser) {
-        await API.graphql(graphqlOperation(createLoggedVisit, {input: { user: signin.user, signin: signin.signin, signout: moment().format(), location: signin.location, contacts: ["test"]}}))
+        await API.graphql(graphqlOperation(createLoggedVisit, {input: 
+            { 
+                user: signin.user, 
+                signin: signin.signin, 
+                signout: moment().format(), 
+                location: signin.location, 
+                contacts: tempContacts
+            }
+        }))
         await API.graphql(graphqlOperation(deleteSignedInUser, { input: { id: signin.id}}))
         updateSignedInUsers();
+        if(props.onSignout) props.onSignout();
+    }
+
+    function getSelected(values) {
+        tempContacts = values
     }
 
     return (
@@ -35,7 +49,14 @@ export default function CurrentVisitors(props){
             <div>
                 <Button variant="contained" onClick={async () => 
                 {
-                    console.log(await API.graphql(graphqlOperation(createSignedInUser, {input: { user: props.user.attributes.name, location: "8", signin: moment().format()}} )))
+                    await API.graphql(graphqlOperation(createSignedInUser, {input: 
+                        { 
+                            user: props.user.attributes.name, 
+                            location: "8", 
+                            signin: moment().format(), 
+                            contacts: []
+                        }
+                    }))
                     updateSignedInUsers()
                 }
                 } > Check in </Button>
@@ -56,8 +77,12 @@ export default function CurrentVisitors(props){
                     <tr key={signin.id}>
                         <td>{signin.user}</td> 
                         <td>{ moment(Date.parse(signin.signin as string)).fromNow()}</td>
-                        <td><ContactList names={currentSignins.map((user) => user.user || "")}/></td>
-                        <td><Button onClick={() => {signout(signin)}} >Leave now</Button> </td>
+                        <td><ContactList id={signin.id} onSelectedChange={getSelected} selected={signin.contacts} names={currentSignins.map((user) => user.user || "")}/></td>
+                        <td><Button onClick={() => 
+                            {
+                                signout(signin)
+                            }
+                        }>Leave now</Button></td>
                     </tr>
                 ))
             }
