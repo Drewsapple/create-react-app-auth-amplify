@@ -49,6 +49,7 @@ export default function CurrentVisitors(props){
             <div>
                 <Button variant="contained" onClick={async () => 
                 {
+                    console.log(props.user)
                     await API.graphql(graphqlOperation(createSignedInUser, {input: 
                         { 
                             user: props.user.attributes.name, 

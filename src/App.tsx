@@ -1,31 +1,48 @@
-import React from 'react';
-import './App.css';
+import React from "react";
+import "./App.css";
 //import logo from './logo.svg';
 
-import Amplify, { Auth } from 'aws-amplify';
-import { AmplifyAuthenticator, AmplifySignUp, AmplifySignOut } from '@aws-amplify/ui-react'
-import { AuthState, onAuthUIStateChange } from '@aws-amplify/ui-components'
+import Amplify, { Auth, Hub } from "aws-amplify";
+import { Authenticator, } from "aws-amplify-react";
+import { AuthState, onAuthUIStateChange } from "@aws-amplify/ui-components";
 
-import { AppBar, Button, IconButton, Input, Paper, Toolbar, Typography } from '@material-ui/core'
+import { AppContext } from "./libs/contextLib";
+
+import { makeStyles } from "@material-ui/core/styles";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Icon from "@material-ui/core/Icon";
+import { Email, People } from "@material-ui/icons";
+import {
+  AppBar,
+  Container,
+  IconButton,
+  Input,
+  Paper,
+  Toolbar,
+  Typography,
+  Card,
+  Button,
+} from "@material-ui/core";
+//import { Header, Footer, HeaderLinks, GridItem, GridContainer, CardBody, CardHeader, CardFooter, CustomInput} from 'material-kit-react'
 
 
-import aws_exports from './aws-exports';
-import CurrentVisitors from './components/CurrentVisitors';
-import LoggedVisits from './components/LoggedVisits';
+import aws_exports from "./aws-exports";
+import CurrentVisitors from "./components/CurrentVisitors";
+import LoggedVisits from "./components/LoggedVisits";
 
-Amplify.configure(aws_exports)
+Amplify.configure(aws_exports);
 
 interface CognitoUser {
-  username: string,
+  username: string;
   attributes: {
-    email: string,
-    name: string,
-    phone_number: string,
-  }
+    email: string;
+    name: string;
+    phone_number: string;
+  };
 }
 
 const AuthStateApp: React.FunctionComponent = () => {
-  const [authState, setAuthState] = React.useState<AuthState>();
+  const [authState, setAuthState] = React.useState<AuthState>(AuthState.Loading);
   const [user, setUser] = React.useState<CognitoUser>();
 
   React.useEffect(() => {
@@ -37,11 +54,27 @@ const AuthStateApp: React.FunctionComponent = () => {
   }, []);
 
   React.useEffect(() => {
-    console.log(Auth.currentSession())
-  }, [authState])
+    Hub.listen('auth', (data) => {
+      const { payload } = data
+      console.log('A new auth event has happened: ', data)
+       if (payload.event === 'signIn') {
+         console.log('a user has signed in!')
+       }
+       if (payload.event === 'signOut') {
+         console.log('a user has signed out!')
+       }
+    })
+  }, [])
 
   /* Create the form state and form input state */
-  let formInputState = { fullname: '', username: '', password: '', phone_number: '', email: '', verificationCode: '' };
+  let formInputState = {
+    name: "",
+    username: "",
+    password: "",
+    phone_number: "",
+    email: "",
+    verificationCode: "",
+  };
 
   /* onChange handler for form inputs */
   function onChange(e) {
@@ -50,14 +83,14 @@ const AuthStateApp: React.FunctionComponent = () => {
 
   /* onAppLoad handler for state init */
   async function onAppLoad() {
-      const user = await Auth.currentAuthenticatedUser();
-      console.log('user:', user)
-      if (user) {
-        setAuthState(AuthState.SignedIn)
-      } else {
-        setAuthState(AuthState.SignUp)
-      }
+    const user = await Auth.currentAuthenticatedUser();
+    console.log("user:", user);
+    if (user) {
+      setAuthState(AuthState.SignedIn);
+    } else {
+      setAuthState(AuthState.SignUp);
     }
+  }
 
   /* Sign up function */
   async function signUp() {
@@ -66,167 +99,399 @@ const AuthStateApp: React.FunctionComponent = () => {
         username: formInputState.username,
         password: formInputState.password,
         attributes: {
-          preferred_username: formInputState.username, 
-          name: formInputState.fullname,
+          preferred_username: formInputState.username,
+          name: formInputState.name,
           email: formInputState.email,
           phone_number: formInputState.phone_number,
-        }});
+        },
+      });
       /* Once the user successfully signs up, update form state to show the confirm sign up form for MFA */
-      setAuthState(AuthState.ConfirmSignUp)
-    } catch (err) { console.log({ err }); }
+      setAuthState(AuthState.ConfirmSignUp);
+    } catch (err) {
+      console.log({ err });
+    }
   }
 
   /* Confirm sign up function for MFA */
   async function confirmSignUp() {
     try {
-      console.log(formInputState)
-      console.log("Confirming signup for " + formInputState.username)
-      console.log(await Auth.confirmSignUp(formInputState.username, formInputState.verificationCode));
+      console.log(formInputState);
+      console.log("Confirming signup for " + formInputState.username);
+      console.log(
+        await Auth.confirmSignUp(
+          formInputState.username,
+          formInputState.verificationCode
+        )
+      );
       /* Once the user successfully confirms their account, update form state to show the sign in form*/
-      setAuthState(AuthState.SignIn)
-    } catch (err) { console.log({ err }); }
+      setAuthState(AuthState.SignIn);
+    } catch (err) {
+      console.log({ err });
+    }
   }
 
   /* Sign in function */
   async function signIn() {
     try {
-      setUser(await Auth.signIn(formInputState.username, formInputState.password))
+      setUser(
+        await Auth.signIn(formInputState.username, formInputState.password)
+      );
       /* Once the user successfully signs in, update the form state to show the signed in state */
-      setAuthState(AuthState.SignedIn)
-    } catch (err) { 
-      if(err.code === "UserNotConfirmedException") setAuthState(AuthState.ConfirmSignUp)
-      else console.log({ err }); }
+      setAuthState(AuthState.SignedIn);
+    } catch (err) {
+      if (err.code === "UserNotConfirmedException")
+        setAuthState(AuthState.ConfirmSignUp);
+      else console.log({ err });
+    }
   }
 
   /* Sign in function */
   async function signOut() {
     try {
-      setUser(undefined)
-      await Auth.signOut()
+      await Auth.signOut();
+      setUser(undefined);
       /* Once the user successfully signs in, update the form state to show the signed in state */
-      setAuthState(AuthState.SignedOut)
-    } catch (err) { 
-      console.log({ err }); }
+      setAuthState(AuthState.SignedOut);
+    } catch (err) {
+      console.log({ err });
+    }
   }
 
-
- /* If the form state is "signIn", show the sign in form */
- if (authState === AuthState.SignIn) {
-   return (
-     <div style={{ textAlign: 'center', display: 'grid', justifyContent: 'center'}}>
-      <Paper elevation={2} >
-    <h2>Sign In</h2>
-    <Input
-        key="userFormField"
-        placeholder="Username/Scroll"
-        name="username"
-        onChange={onChange}
-    />
-    <Input
-        key="passwordFormField"
-        placeholder="Password"
-        name="password"
-        type="password"
-        onChange={onChange}
-    />
-    <Button onClick={signIn}>Sign In</Button>
-    <Button onClick={() => setAuthState(AuthState.SignUp)}>Sign Up</Button>
-      </Paper>
-      </div>
-   )
-  }
-  /* If the form state is "confirmSignUp", show the confirm sign up form */
-  else if (authState === AuthState.ConfirmSignUp) {
   return (
-    <div style={{ textAlign: 'center', display: 'grid', justifyContent: 'center'}}>
-        <Paper elevation={2} >
-      <h2>Confirm Signup via SMS</h2>
-      <Input
-          key="userFormField"
-          placeholder="Username/Scroll"
-          name="username"
-          onChange={onChange}
-      />
-      <Input
-          key="verificationFormField"
-          placeholder="Verification Code"
-          name="verificationCode"
-          onChange={onChange}
-      />
-      <Button onClick={confirmSignUp}>Confirm Sign Up</Button>
-      </Paper>
-      </div>
-  )
-  }
-  /* If the form state is "signedIn", show the app */
-  else if (authState === AuthState.SignedIn && user) {
-  return (
+    <AppContext.Provider value={{authState, setAuthState}}>
     <div className="App">
-    <AppBar position="static">
-      <Toolbar>
-        <IconButton edge="start" className="menuButton" color="inherit" aria-label="menu">
-        </IconButton>
-        <Typography variant="h6" className="title">
-          Hello, {user.username}
-        </Typography>
-        <Button onClick={signOut}>Log Out</Button>
-      </Toolbar>
-    </AppBar>
-    <br/>
-    <CurrentVisitors user={user}/>
-    <LoggedVisits />
-  </div>
-  )
-  }
-  /* In the UI of the app, render forms based on form state */
-    /* If the form state is "signUp", show the sign up form */
-  else {
-    return (
-      <AmplifyAuthenticator>
-      <div style={{ textAlign: 'center', display: 'grid', justifyContent: 'center'}}>
-      <Paper elevation={2} >
-      <h2>Sign Up</h2>
-      <Input 
-        key="nameFormField"
-        placeholder="Full Name" 
-        name="name" 
-        inputProps={{ 'aria-label': 'username' }} 
-        onChange={onChange}
-      />
-      <Input 
-        key="userFormField"
-        placeholder="Username/Scroll" 
-        name="username" 
-        inputProps={{ 'aria-label': 'username' }} 
-        onChange={onChange}
-      />
-      <Input 
-          key="passwordFormField"
-          placeholder="Password"
-          name="password"
-          type="password"
-          onChange={onChange}
-      />
-      <Input 
-          placeholder="Phone Number"
-          name="phone_number"
-          type="tel"
-          inputProps={{ 'aria-label': 'phone number' }} 
-          onChange={onChange}
-      />
-      <Input
-          key="emailFormField"
-          placeholder="Non-WPI email address"
-          name="email"
-          onChange={onChange}
-      />
-      <Button onClick={signUp}>Sign Up</Button>
-      <Button onClick={() => setAuthState(AuthState.SignIn)}>Sign In</Button>
-      </Paper>
-      </div>
-      </AmplifyAuthenticator>
-  )
-  }
-}
+          <AppContext.Consumer>
+          {(appContext) => {
+            console.log("Context passed down:")
+            console.log(appContext)
+            switch (authState) {
+              case AuthState.SignedIn:
+                if(!user) {setAuthState(AuthState.SignedOut); break;}
+                else {
+                return (
+                  <>
+                    <AppBar position="static">
+                      <Toolbar>
+                        <IconButton
+                          edge="start"
+                          className="menuButton"
+                          color="inherit"
+                          aria-label="menu"
+                        ></IconButton>
+                        <Typography variant="h6" className="title">
+                          Hello, {user.username}
+                        </Typography>
+                        <Button variant="outlined" onClick={signOut}>
+                          Log Out
+                        </Button>
+                      </Toolbar>
+                    </AppBar>
+                    <br />
+                    <CurrentVisitors user={user} />
+                    <LoggedVisits />
+                  </>
+                );}
+              case AuthState.SignIn:
+              case AuthState.SignedOut:
+                return (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      display: "grid",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Paper color='white' elevation={2}>
+                      <h2>Sign In</h2>
+                      <Input
+                        key="userFormField"
+                        placeholder="Username/Scroll"
+                        name="username"
+                        onChange={onChange}
+                      />
+                      <Input
+                        key="passwordFormField"
+                        placeholder="Password"
+                        name="password"
+                        type="password"
+                        onChange={onChange}
+                      />
+                      <Container maxWidth="sm">
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={signIn}
+                        >
+                          Sign In
+                        </Button>
+                        <Button
+                          variant="outlined"
+                          color="secondary"
+                          onClick={() => {
+                            console.log(authState);
+                            setAuthState(AuthState.SignUp);
+                            console.log(authState);
+                          }}
+                        >
+                          Sign Up
+                        </Button>
+                      </Container>
+                    </Paper>
+                  </div>
+                );
+              case AuthState.ConfirmSignUp:
+                return (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      display: "grid",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Paper elevation={2}>
+                      <h2>Confirm Signup via SMS</h2>
+                      <Input
+                        key="userFormField"
+                        placeholder="Username/Scroll"
+                        name="username"
+                        onChange={onChange}
+                      />
+                      <Input
+                        key="verificationFormField"
+                        placeholder="Verification Code"
+                        name="verificationCode"
+                        onChange={onChange}
+                      />
+                      <Container maxWidth="sm">
+                        <Button variant="outlined" onClick={confirmSignUp}>
+                          Confirm Sign Up
+                        </Button>
+                      </Container>
+                    </Paper>
+                  </div>
+                );
+              case AuthState.SignUp:
+              default:
+                return (
+                  <div
+                    style={{
+                      textAlign: "center",
+                      display: "grid",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Paper elevation={2}>
+                      <h2>Sign Up</h2>
+                      <Input
+                        key="nameFormField"
+                        placeholder="Full Name"
+                        name="name"
+                        inputProps={{ "aria-label": "username" }}
+                        onChange={onChange}
+                      />
+                      <Input
+                        key="userFormField"
+                        placeholder="Username/Scroll"
+                        name="username"
+                        inputProps={{ "aria-label": "username" }}
+                        onChange={onChange}
+                      />
+                      <Input
+                        key="passwordFormField"
+                        placeholder="Password"
+                        name="password"
+                        type="password"
+                        onChange={onChange}
+                      />
+                      <Input
+                        placeholder="Phone ex. +15085551234"
+                        name="phone_number"
+                        type="tel"
+                        inputProps={{ "aria-label": "phone number" }}
+                        onChange={onChange}
+                      />
+                      <Input
+                        key="emailFormField"
+                        placeholder="Non-WPI email address"
+                        name="email"
+                        onChange={onChange}
+                      />
+                      <Container maxWidth="sm">
+                        <Button onClick={signUp}>Sign Up</Button>
+                        <Button onClick={() => setAuthState(AuthState.SignIn)}>
+                          Sign In
+                        </Button>
+                      </Container>
+                    </Paper>
+                  </div>
+                );
+            }
+          }}
+          </AppContext.Consumer>
+    </div>
+    </AppContext.Provider>
+  );
+
+  // /* If the form state is "signIn", show the sign in form */
+  // if (authState === AuthState.SignIn) {
+  //   return (
+  //     <div
+  //       style={{
+  //         textAlign: "center",
+  //         display: "grid",
+  //         justifyContent: "center",
+  //       }}
+  //     >
+  //       <Paper elevation={2}>
+  //         <h2>Sign In</h2>
+  //         <Input
+  //           key="userFormField"
+  //           placeholder="Username/Scroll"
+  //           name="username"
+  //           onChange={onChange}
+  //         />
+  //         <Input
+  //           key="passwordFormField"
+  //           placeholder="Password"
+  //           name="password"
+  //           type="password"
+  //           onChange={onChange}
+  //         />
+  //         <Container maxWidth="sm">
+  //           <Button variant="outlined" color="primary" onClick={signIn}>
+  //             Sign In
+  //           </Button>
+  //           <Button
+  //             variant="outlined"
+  //             color="secondary"
+  //             onClick={() => {
+  //               console.log(authState);
+  //               setAuthState(AuthState.SignUp);
+  //               console.log(authState);
+  //             }}
+  //           >
+  //             Sign Up
+  //           </Button>
+  //         </Container>
+  //       </Paper>
+  //     </div>
+  //   );
+  // } else if (authState === AuthState.ConfirmSignUp) {
+  // /* If the form state is "confirmSignUp", show the confirm sign up form */
+  //   return (
+  //     <div
+  //       style={{
+  //         textAlign: "center",
+  //         display: "grid",
+  //         justifyContent: "center",
+  //       }}
+  //     >
+  //       <Paper elevation={2}>
+  //         <h2>Confirm Signup via SMS</h2>
+  //         <Input
+  //           key="userFormField"
+  //           placeholder="Username/Scroll"
+  //           name="username"
+  //           onChange={onChange}
+  //         />
+  //         <Input
+  //           key="verificationFormField"
+  //           placeholder="Verification Code"
+  //           name="verificationCode"
+  //           onChange={onChange}
+  //         />
+  //         <Container maxWidth="sm">
+  //           <Button variant="outlined" onClick={confirmSignUp}>
+  //             Confirm Sign Up
+  //           </Button>
+  //         </Container>
+  //       </Paper>
+  //     </div>
+  //   );
+  // } else if (authState === AuthState.SignedIn && user) {
+  // /* If the form state is "signedIn", show the app */
+  //   return (
+  //     <div className="App">
+  //       <AppBar position="static">
+  //         <Toolbar>
+  //           <IconButton
+  //             edge="start"
+  //             className="menuButton"
+  //             color="inherit"
+  //             aria-label="menu"
+  //           ></IconButton>
+  //           <Typography variant="h6" className="title">
+  //             Hello, {user.username}
+  //           </Typography>
+  //           <Button variant="outlined" onClick={signOut}>
+  //             Log Out
+  //           </Button>
+  //         </Toolbar>
+  //       </AppBar>
+  //       <br />
+  //       <CurrentVisitors user={user} />
+  //       <LoggedVisits />
+  //     </div>
+  //   );
+  // } else {
+  // /* In the UI of the app, render forms based on form state */
+  // /* If the form state is "signUp", show the sign up form */
+  //   return (
+  //     <AmplifyAuthenticator>
+  //       <div
+  //         style={{
+  //           textAlign: "center",
+  //           display: "grid",
+  //           justifyContent: "center",
+  //         }}
+  //       >
+  //         <Paper elevation={2}>
+  //           <h2>Sign Up</h2>
+  //           <Input
+  //             key="nameFormField"
+  //             placeholder="Full Name"
+  //             name="name"
+  //             inputProps={{ "aria-label": "username" }}
+  //             onChange={onChange}
+  //           />
+  //           <Input
+  //             key="userFormField"
+  //             placeholder="Username/Scroll"
+  //             name="username"
+  //             inputProps={{ "aria-label": "username" }}
+  //             onChange={onChange}
+  //           />
+  //           <Input
+  //             key="passwordFormField"
+  //             placeholder="Password"
+  //             name="password"
+  //             type="password"
+  //             onChange={onChange}
+  //           />
+  //           <Input
+  //             placeholder="Phone Number"
+  //             name="phone_number"
+  //             type="tel"
+  //             inputProps={{ "aria-label": "phone number" }}
+  //             onChange={onChange}
+  //           />
+  //           <Input
+  //             key="emailFormField"
+  //             placeholder="Non-WPI email address"
+  //             name="email"
+  //             onChange={onChange}
+  //           />
+  //           <Container maxWidth="sm">
+  //             <Button onClick={signUp}>Sign Up</Button>
+  //             <Button onClick={() => setAuthState(AuthState.SignIn)}>
+  //               Sign In
+  //             </Button>
+  //           </Container>
+  //         </Paper>
+  //       </div>
+  //     </AmplifyAuthenticator>
+  //   );
+  // }
+};
 
 export default AuthStateApp;

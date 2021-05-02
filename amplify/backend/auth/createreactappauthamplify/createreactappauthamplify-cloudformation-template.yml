@@ -189,7 +189,14 @@ Resources:
     UpdateReplacePolicy: Retain
     Properties:
       UserPoolName: !If [ShouldNotCreateEnvResources, !Ref userPoolName, !Join ['',[!Ref userPoolName, '-', !Ref env]]]
-      
+      LambdaConfig:
+        PostConfirmation: !Sub
+          - arn:aws:lambda:${region}:${account}:function:allusersadder-${env}
+          - {
+              region: !Ref 'AWS::Region',
+              account: !Ref 'AWS::AccountId',
+              env: !Ref env,
+            }
       
       Schema:
         
