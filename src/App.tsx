@@ -62,7 +62,7 @@ const AuthStateApp: React.FunctionComponent = () => {
     Auth.currentAuthenticatedUser().then( (value) => {
       setUser(value.attributes);
     })
-  }, [user])
+  }, [])
 
 
   React.useEffect(() => {
