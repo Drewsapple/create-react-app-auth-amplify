@@ -38,7 +38,7 @@ Amplify.configure({
     userPoolId: aws_exports.aws_user_pools_id,
     userPoolWebClientId: aws_exports.aws_user_pools_web_client_id,
     mandatorySignIn: true,
-    localStorage: {
+    cookieStorage: {
       domain: 'tracking.boop.sh',
       path: '/',
       expires: 365,
