@@ -3,12 +3,10 @@ import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/sty
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import { Autocomplete } from '@material-ui/lab';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { API, graphqlOperation } from 'aws-amplify';
 import { updateSignedInUser } from '../graphql/mutations';
-import { Chip, TextField } from '@material-ui/core';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -67,24 +65,26 @@ export default function ContactList(props) {
     <div>
       <FormControl className={classes.formControl}>
         <InputLabel id="demo-mutiple-name-label">Contacts</InputLabel>
-        <Autocomplete
+        <Select
+          labelId="demo-mutiple-name-label"
+          id="contact-list"
           multiple
-          freeSolo
-          id="tags-outlined"
-          autoComplete={true}
-          autoHighlight={true}
-          options={names}
+          value={names}
           onChange={handleChange}
-          renderTags={(value: string[], getTagProps) =>
-            value.map((option: string, index: number) => (
-              <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-            ))
-          }
-          renderInput={(params) => (
-            <TextField {...params} variant="filled" label="freeSolo" placeholder="Favorites" />
-          )}
-        />
+          input={<Input />}
+          MenuProps={MenuProps}
+        >
+          {[... (new Set<string>(props.names))].map((name) => (
+            <MenuItem
+              key={name}
+              value={name}
+              style={getStyles(name, names, theme)}
+            >
+              {name}
+            </MenuItem>
+          ))}
+        </Select>
       </FormControl>
-    </div>   
+    </div>
   );
 }

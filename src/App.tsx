@@ -18,6 +18,7 @@ import {
   Toolbar,
   Typography,
   Button,
+  TextField,
 } from "@material-ui/core";
 //import { Header, Footer, HeaderLinks, GridItem, GridContainer, CardBody, CardHeader, CardFooter, CustomInput} from 'material-kit-react'
 
@@ -33,13 +34,13 @@ Amplify.configure({
     identityPoolRegion: aws_exports.aws_cognito_region,
     userPoolId: aws_exports.aws_user_pools_id,
     userPoolWebClientId: aws_exports.aws_user_pools_web_client_id,
-    mandatorySignIn: true,
-    cookieStorage: {
-      domain: 'tracking.boop.sh',
-      path: '/',
-      expires: 365,
-      secure: process.env.NODE_ENV !== 'development',
-    }
+    // mandatorySignIn: true,
+    // cookieStorage: {
+    //   domain: 'tracking.boop.sh',
+    //   path: '/',
+    //   expires: 365,
+    //   secure: process.env.NODE_ENV !== 'development',
+    // }
   },
   "aws_appsync_authenticationType": aws_exports.aws_appsync_authenticationType,
   "aws_appsync_graphqlEndpoint": aws_exports.aws_appsync_graphqlEndpoint,
@@ -50,6 +51,14 @@ Amplify.configure({
 const AuthStateApp: React.FunctionComponent = () => {
   const [authState, setAuthState] = React.useState<AuthState>(AuthState.SignedIn);
   const [user, setUser] = React.useState<CognitoUser>();
+  const [formData, setFormData] = React.useState({
+    name: "",
+    username: "",
+    password: "",
+    phone_number: "",
+    email: "",
+    verificationCode: "",
+  });
 
   React.useEffect(() => {
     setAuthState(AuthState.SignUp);
@@ -79,19 +88,10 @@ const AuthStateApp: React.FunctionComponent = () => {
     })
   }, [])
 
-  /* Create the form state and form input state */
-  let formInputState = {
-    name: "",
-    username: "",
-    password: "",
-    phone_number: "",
-    email: "",
-    verificationCode: "",
-  };
 
   /* onChange handler for form inputs */
   function onChange(e) {
-    formInputState = { ...formInputState, [e.target.name]: e.target.value };
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   }
 
   /* onAppLoad handler for state init */
@@ -109,13 +109,13 @@ const AuthStateApp: React.FunctionComponent = () => {
   async function signUp() {
     try {
       await Auth.signUp({
-        username: formInputState.username,
-        password: formInputState.password,
+        username: formData.username,
+        password: formData.password,
         attributes: {
-          preferred_username: formInputState.username,
-          name: formInputState.name,
-          email: formInputState.email,
-          phone_number: formInputState.phone_number,
+          preferred_username: formData.username,
+          name: formData.name,
+          email: formData.email,
+          phone_number: formData.phone_number,
         },
       });
       /* Once the user successfully signs up, update form state to show the confirm sign up form for MFA */
@@ -125,15 +125,21 @@ const AuthStateApp: React.FunctionComponent = () => {
     }
   }
 
+  function validatePhoneForE164(phoneNumber) {
+    const regEx = /^\+[1-9]\d{10,14}$/;
+
+    return regEx.test(phoneNumber);
+};
+
   /* Confirm sign up function for MFA */
   async function confirmSignUp() {
     try {
-      console.log(formInputState);
-      console.log("Confirming signup for " + formInputState.username);
+      console.log(formData);
+      console.log("Confirming signup for " + formData.username);
       console.log(
         await Auth.confirmSignUp(
-          formInputState.username,
-          formInputState.verificationCode
+          formData.username,
+          formData.verificationCode
         )
       );
       /* Once the user successfully confirms their account, update form state to show the sign in form*/
@@ -146,8 +152,8 @@ const AuthStateApp: React.FunctionComponent = () => {
   /* Sign in function */
   async function signIn() {
     try {
-      console.log('attempting signin for ' + formInputState.username)
-      let user = await Auth.signIn(formInputState.username, formInputState.password)
+      console.log('attempting signin for ' + formData.username)
+      let user = await Auth.signIn(formData.username, formData.password)
       console.log(user)
       setUser(user);
       /* Once the user successfully signs in, update the form state to show the signed in state */
@@ -216,15 +222,15 @@ const AuthStateApp: React.FunctionComponent = () => {
                   >
                     <Paper color='white' elevation={2}>
                       <h2>Sign In</h2>
-                      <Input
+                      <TextField
                         key="userFormField"
-                        placeholder="Username/Scroll"
+                        label="Username/Scroll"
                         name="username"
                         onChange={onChange}
                       />
-                      <Input
+                      <TextField
                         key="passwordFormField"
-                        placeholder="Password"
+                        label="Password"
                         name="password"
                         type="password"
                         onChange={onChange}
@@ -263,15 +269,15 @@ const AuthStateApp: React.FunctionComponent = () => {
                   >
                     <Paper elevation={2}>
                       <h2>Confirm Signup via SMS</h2>
-                      <Input
+                      <TextField
                         key="userFormField"
-                        placeholder="Username/Scroll"
+                        label="Username/Scroll"
                         name="username"
                         onChange={onChange}
                       />
-                      <Input
+                      <TextField
                         key="verificationFormField"
-                        placeholder="Verification Code"
+                        label="Verification Code"
                         name="verificationCode"
                         onChange={onChange}
                       />
@@ -295,37 +301,47 @@ const AuthStateApp: React.FunctionComponent = () => {
                   >
                     <Paper elevation={2}>
                       <h2>Sign Up</h2>
-                      <Input
+                      <TextField
                         key="nameFormField"
-                        placeholder="Full Name"
+                        label="Full Name"
                         name="name"
                         inputProps={{ "aria-label": "username" }}
                         onChange={onChange}
                       />
-                      <Input
+                      <TextField
                         key="userFormField"
-                        placeholder="Username/Scroll"
+                        label="Username/Scroll"
                         name="username"
                         inputProps={{ "aria-label": "username" }}
                         onChange={onChange}
                       />
-                      <Input
+                      <TextField
+                        error={8 > formData.password.length}
                         key="passwordFormField"
-                        placeholder="Password"
+                        label="Password"
                         name="password"
                         type="password"
+                        helperText="Must be at least 8 characters"
                         onChange={onChange}
                       />
-                      <Input
+                      <TextField
+                        error={!validatePhoneForE164(formData.phone_number)}
+                        name="phone_number"
+                        id="standard-error-helper-text"
+                        label="Phone"
+                        onChange={onChange}
+                        helperText="ex. +15085551234"
+                      />
+                      {/* <Input
                         placeholder="Phone ex. +15085551234"
                         name="phone_number"
                         type="tel"
                         inputProps={{ "aria-label": "phone number" }}
                         onChange={onChange}
-                      />
-                      <Input
+                      /> */}
+                      <TextField
                         key="emailFormField"
-                        placeholder="Non-WPI email address"
+                        label="Non-WPI email address"
                         name="email"
                         onChange={onChange}
                       />
