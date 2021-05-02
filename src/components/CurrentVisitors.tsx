@@ -43,8 +43,8 @@ export default function CurrentVisitors(props){
     return (
         <div style={{ textAlign: 'center', display: 'grid', justifyContent: 'center'}} >
             <h2>{currentSignins.length === 1 ? currentSignins.length + " guest" : currentSignins.length + " guests"} at the house</h2>
-            {false ? 
-            <p>at capacity</p>
+            {currentSignins.length > 9 ? 
+            <h3>At capacity, please find someone to swap with</h3>
             :
             <div>
                 <Button variant="contained" onClick={async () => 
