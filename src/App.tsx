@@ -38,6 +38,7 @@ Amplify.configure({
       domain: 'tracking.boop.sh',
       path: '/',
       expires: 365,
+      secure: process.env.NODE_ENV !== 'development',
     }
   },
   "aws_appsync_authenticationType": aws_exports.aws_appsync_authenticationType,
@@ -145,7 +146,7 @@ const AuthStateApp: React.FunctionComponent = () => {
   /* Sign in function */
   async function signIn() {
     try {
-      console.log('attempting signin')
+      console.log('attempting signin for ' + formInputState.username)
       let user = await Auth.signIn(formInputState.username, formInputState.password)
       console.log(user)
       setUser(user);
@@ -175,7 +176,6 @@ const AuthStateApp: React.FunctionComponent = () => {
     <div className="App">
           <AppContext.Consumer>
           {(appContext) => {
-            console.log("Context passed down:")
             console.log(appContext)
             switch (authState) {
               case AuthState.SignedIn:
