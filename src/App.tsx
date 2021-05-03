@@ -39,7 +39,7 @@ Amplify.configure({
       domain: 'tracking.boop.sh',
       path: '/',
       expires: 365,
-      secure: process.env.NODE_ENV !== 'development',
+      secure: true,
     }
   },
   "aws_appsync_authenticationType": aws_exports.aws_appsync_authenticationType,
@@ -285,6 +285,9 @@ const AuthStateApp: React.FunctionComponent = () => {
                         <Button variant="outlined" onClick={confirmSignUp}>
                           Confirm Sign Up
                         </Button>
+                        <Button variant="outlined" onClick={() => Auth.resendSignUp(formData.username)}>
+                          Re-send SMS Code
+                        </Button>
                       </Container>
                     </Paper>
                   </div>
@@ -332,13 +335,6 @@ const AuthStateApp: React.FunctionComponent = () => {
                         onChange={onChange}
                         helperText="ex. +15085551234"
                       />
-                      {/* <Input
-                        placeholder="Phone ex. +15085551234"
-                        name="phone_number"
-                        type="tel"
-                        inputProps={{ "aria-label": "phone number" }}
-                        onChange={onChange}
-                      /> */}
                       <TextField
                         key="emailFormField"
                         label="Non-WPI email address"

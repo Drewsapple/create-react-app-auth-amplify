@@ -1,32 +1,9 @@
 import React from 'react';
-import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import { createStyles, useTheme, Theme } from '@material-ui/core/styles';
+import { Input, InputLabel, MenuItem, FormControl, Select } from '@material-ui/core';
 import { API, graphqlOperation } from 'aws-amplify';
 import { updateSignedInUser } from '../graphql/mutations';
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    formControl: {
-      margin: theme.spacing(1),
-      minWidth: 120,
-      maxWidth: 300,
-    },
-    chips: {
-      display: 'flex',
-      flexWrap: 'wrap',
-    },
-    chip: {
-      margin: 2,
-    },
-    noLabel: {
-      marginTop: theme.spacing(3),
-    },
-  }),
-);
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -49,7 +26,6 @@ function getStyles(name: string, personName: string[], theme: Theme) {
 }
 
 export default function ContactList(props) {
-  const classes = useStyles();
   const theme = useTheme();
   const [names, setNames] = React.useState<string[]>(props.selected);
 
@@ -63,7 +39,7 @@ export default function ContactList(props) {
 
   return (
     <div>
-      <FormControl className={classes.formControl}>
+      <FormControl className="formcontrol">
         <InputLabel id="demo-mutiple-name-label">Contacts</InputLabel>
         <Select
           labelId="demo-mutiple-name-label"
